@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#003B64">
+    <title>Citi HK • 花旗銀行香港</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Noto+Sans+TC:wght@400;500;700&amp;display=swap');
+        
+        :root {
+            --citi-blue: #003B64;
+        }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+        }
+        
+        .app-container {
+            max-width: 420px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 40px;
+            overflow: hidden;
+            border: 12px solid #111;
+        }
+        
+        .ios-status-bar {
+            height: 44px;
+            background: #fff;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .citi-header {
+            background: #fff;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .nav-tab {
+            transition: all 0.2s ease;
+        }
+        
+        .nav-tab.active {
+            color: #003B64;
+            font-weight: 600;
+        }
+        
+        .bank-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .bank-card:active {
+            transform: scale(0.985);
+        }
+        
+        .section-header {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            letter-spacing: -.3px;
+        }
+        
+        .transaction-item {
+            transition: background-color 0.1s ease;
+        }
+        
+        .transaction-item:active {
+            background-color: #f8fafc;
+        }
+        
+        .citi-blue {
+            color: #003B64;
+        }
+        
+        .modal {
+            animation: modalPop 0.2s ease forwards;
+        }
+        
+        @keyframes modalPop {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .ios-button {
+            transition: all 0.1s ease;
+        }
+        
+        .ios-button:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+        
+        .app-content {
+            scrollbar-width: none;
+        }
+        
+        .app-content::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .demo-badge {
+            font-size: 10px;
+            padding: 1px 7px;
+            background: #fef3c7;
+            color: #92400e;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 flex items-center justify-center min-h-screen p-4">
+    <!-- Phone Frame Container -->
+    <div class="app-container w-full bg-white flex flex-col h-[780px] relative overflow-hidden">
+        
+        <!-- ==================== SPLASH SCREEN ==================== -->
+        <div id="splash-screen" class="absolute inset-0 bg-[#003B64] flex flex-col items-center justify-center z-50">
+            <div class="text-center">
+                <!-- Citi Logo -->
+                <div class="flex items-center justify-center mb-1">
+                    <span class="text-white text-[72px] font-bold tracking-[-4px]">citi</span>
+                    <span class="text-[#E31837] text-5xl font-bold ml-0.5 mt-1">®</span>
+                </div>
+                <div class="text-white text-xl tracking-[3px] font-light -mt-3">HONG KONG</div>
+                
+                <!-- Decorative kayak / water illustration -->
+                <div class="mt-8 mb-6 relative w-72 mx-auto">
+                    <div class="h-2 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full"></div>
+                    <div class="mt-6 flex justify-center">
+                        <svg width="120" height="70" viewBox="0 0 120 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Water waves -->
+                            <path d="M0 55 Q20 45 40 55 Q60 65 80 55 Q100 45 120 55" stroke="#4A90D9" stroke-width="3" fill="none"/>
+                            <path d="M0 62 Q25 52 50 62 Q75 72 100 62 Q115 55 120 62" stroke="#5BA3E0" stroke-width="2" fill="none"/>
+                            
+                            <!-- Kayak -->
+                            <ellipse cx="60" cy="42" rx="38" ry="7" fill="#E5E7EB"/>
+                            <rect x="35" y="35" width="50" height="14" rx="3" fill="#1F3A5F"/>
+                            <!-- Person -->
+                            <circle cx="55" cy="28" r="5" fill="#FBBF24"/>
+                            <rect x="50" y="32" width="10" height="12" rx="2" fill="#1F3A5F"/>
+                            <!-- Paddle -->
+                            <line x1="68" y1="25" x2="82" y2="48" stroke="#E5E7EB" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="83" cy="49" r="4" fill="#E5E7EB"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="text-white/70 text-sm tracking-wide">Banking. Simplified.</div>
+            </div>
+            
+            <div class="absolute bottom-12 w-full px-8">
+                <button onclick="enterApp()" 
+                        class="w-full bg-white text-[#003B64] font-semibold py-3.5 rounded-2xl text-base shadow-lg active:scale-[0.985] transition-all">
+                    登入 Citi HK
+                </button>
+                <p class="text-center text-white/40 text-xs mt-4">Demo PWA • 僅供展示用途</p>
+            </div>
+        </div>
+        
+        <!-- ==================== MAIN APP ==================== -->
+        <div id="main-app" class="hidden flex flex-col h-full">
+            
+            <!-- Clean Status Bar (no recording dot, clean for PWA) -->
+            <div class="ios-status-bar flex items-center justify-between text-black bg-white">
+                <div class="flex items-center">
+                    <span id="status-time" class="font-semibold">3:03</span>
+                </div>
+                <div class="flex items-center gap-x-1.5 pr-1">
+                    <!-- Signal -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    <span class="text-[10px] font-bold">5G</span>
+                    
+                    <!-- WiFi -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M17.778 8.222a.75.75 0 010 1.06L14.06 13l3.72 3.72a.75.75 0 01-1.06 1.06l-4.25-4.25a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 0zM11.25 8.222a.75.75 0 010 1.06L7.53 13l3.72 3.72a.75.75 0 01-1.06 1.06l-4.25-4.25a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 0z" clip-rule="evenodd" />
+                    </svg>
+                    
+                    <!-- Battery -->
+                    <div class="flex items-center">
+                        <div class="w-7 h-3.5 border border-black rounded-sm relative">
+                            <div class="absolute inset-[1px] bg-black rounded-sm w-[78%]"></div>
+                        </div>
+                        <div class="w-0.5 h-1.5 bg-black rounded-r-sm -ml-px"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- App Header -->
+            <div class="citi-header px-5 py-3 flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="flex items-baseline">
+                        <span class="text-[#003B64] text-3xl font-bold tracking-[-1.5px]">citi</span>
+                        <span class="text-[#E31837] text-xl font-bold ml-px">®</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-x-3">
+                    <div class="text-right">
+                        <div class="text-sm font-semibold text-zinc-800">Kwun Long Lam</div>
+                        <div class="text-[10px] text-emerald-600 font-medium flex items-center justify-end gap-1">
+                            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                            Wealth 360
+                        </div>
+                    </div>
+                    <div class="w-9 h-9 bg-zinc-200 rounded-full flex items-center justify-center ring-2 ring-white shadow-sm overflow-hidden">
+                        <span class="text-xl">👨🏻</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div id="content-area" class="flex-1 overflow-auto app-content bg-zinc-50">
+                
+                <!-- ========== HOME SCREEN ========== -->
+                <div id="screen-home">
+                    <!-- Top tabs -->
+                    <div class="bg-white px-1 pt-1 flex border-b">
+                        <div class="flex-1 text-center py-2.5 text-sm font-semibold text-[#003B64] border-b-2 border-[#003B64]">所有</div>
+                        <div class="flex-1 text-center py-2.5 text-sm text-zinc-500">最新優惠</div>
+                        <div class="flex-1 text-center py-2.5 text-sm text-zinc-500">發現</div>
+                        <div class="flex-1 text-center py-2.5 text-sm text-zinc-500">Wealth Insights</div>
+                        <div class="flex-1 text-center py-2.5 text-sm text-zinc-500">投資</div>
+                    </div>
+                    
+                    <div class="p-4 space-y-4">
+                        <!-- Greeting -->
+                        <div>
+                            <div class="text-2xl font-semibold text-zinc-800">你好，Kwun Long Lam</div>
+                            <div class="text-sm text-zinc-500 mt-0.5">今天有什麼可以幫到你？</div>
+                        </div>
+                        
+                        <!-- Quick Action Buttons -->
+                        <div class="grid grid-cols-5 gap-2">
+                            <div onclick="quickAction('transfer')" class="bg-white rounded-2xl p-3 flex flex-col items-center justify-center shadow-sm active:bg-zinc-100 cursor-pointer">
+                                <div class="text-2xl mb-1">💸</div>
+                                <div class="text-[10px] font-medium text-center leading-tight">轉數快<br>轉賬</div>
+                            </div>
+                            <div onclick="quickAction('scan')" class="bg-white rounded-2xl p-3 flex flex-col items-center justify-center shadow-sm active:bg-zinc-100 cursor-pointer">
+                                <div class="text-2xl mb-1">📷</div>
+                                <div class="text-[10px] font-medium text-center leading-tight">掃描<br>二維碼</div>
+                            </div>
+                            <div onclick="quickAction('pay')" class="bg-white rounded-2xl p-3 flex flex-col items-center justify-center shadow-sm active:bg-zinc-100 cursor-pointer">
+                                <div class="text-2xl mb-1">📱</div>
+                                <div class="text-[10px] font-medium text-center leading-tight">繳付<br>賬單</div>
+                            </div>
+                            <div onclick="quickAction('invest')" class="bg-white rounded-2xl p-3 flex flex-col items-center justify-center shadow-sm active:bg-zinc-100 cursor-pointer">
+                                <div class="text-2xl mb-1">📈</div>
+                                <div class="text-[10px] font-medium text-center leading-tight">投資</div>
+                            </div>
+                            <div onclick="quickAction('emergency')" class="bg-white rounded-2xl p-3 flex flex-col items-center justify-center shadow-sm active:bg-zinc-100 cursor-pointer">
+                                <div class="text-2xl mb-1">🆘</div>
+                                <div class="text-[10px] font-medium text-center leading-tight">緊急<br>中心</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Offer Cards -->
+                        <div class="space-y-3">
+                            <!-- Citi Quick Cash -->
+                            <div class="bank-card bg-white rounded-3xl p-4 shadow-sm border border-zinc-100">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <div class="font-semibold text-lg">Citi Quick Cash</div>
+                                        <div class="text-emerald-600 text-sm font-medium">月平息低至0.15%</div>
+                                        <div class="text-[10px] text-zinc-500">(實際年利率低至3.36%)</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-xs px-2.5 py-0.5 bg-emerald-100 text-emerald-700 rounded-full w-fit ml-auto">最新優惠</div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 text-xs text-zinc-600 leading-snug">
+                                    申請Quick Cash即時套現金兼享高達<strong>HK$8,000現金回贈</strong>
+                                </div>
+                                <button onclick="applyOffer('quickcash')" 
+                                        class="mt-3.5 text-sm bg-[#003B64] hover:bg-[#002a4a] transition-colors text-white px-5 py-2 rounded-2xl text-xs font-semibold ios-button">
+                                    立即申請
+                                </button>
+                            </div>
+                            
+                            <!-- Global Wealth Insights -->
+                            <div class="bank-card bg-white rounded-3xl p-4 shadow-sm border border-zinc-100">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="font-semibold">Global Wealth Insights</div>
+                                        <div class="text-xs text-amber-600 mt-0.5">最新外匯預測 – 難以持續</div>
+                                    </div>
+                                    <div class="text-2xl">🌍</div>
+                                </div>
+                                <button onclick="showInsights()" 
+                                        class="mt-3 text-xs border border-zinc-300 text-zinc-600 px-4 py-1.5 rounded-2xl font-medium">
+                                    查看最新分析
+                                </button>
+                            </div>
+                            
+                            <!-- Invest -->
+                            <div class="bank-card bg-white rounded-3xl p-4 shadow-sm border border-zinc-100">
+                                <div class="flex justify-between">
+                                    <div>
+                                        <div class="font-semibold">Invest</div>
+                                        <div class="text-xs text-zinc-500 mt-0.5">探索Citi最佳表現基金和最活躍股票</div>
+                                    </div>
+                                </div>
+                                <button onclick="showInvest()" 
+                                        class="mt-3 text-xs bg-zinc-900 text-white px-4 py-1.5 rounded-2xl font-medium">
+                                    開始投資
+                                </button>
+                            </div>
+                            
+                            <!-- Deposit Protection -->
+                            <div class="bank-card bg-white rounded-3xl p-4 shadow-sm border border-zinc-100 flex items-center justify-between">
+                                <div>
+                                    <div class="font-semibold">存款保障</div>
+                                    <div class="text-xs text-emerald-600">你的存款受保障計劃保障</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full">按此</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ========== ACCOUNTS SCREEN ========== -->
+                <div id="screen-accounts" class="hidden bg-[#F8F9FA]">
+                    <!-- Header matching photo -->
+                    <div class="bg-white px-4 py-3 flex items-center justify-between border-b">
+                        <div class="font-semibold text-lg">Kwun Long Lam</div>
+                        <div class="flex items-center gap-x-3">
+                            <div class="flex items-center gap-x-1">
+                                <!-- Grid icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                </svg>
+                            </div>
+                            <div class="relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2.01 2.01 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] rounded-full flex items-center justify-center font-bold">9</div>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <!-- CIO策略簡報 -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 text-xs bg-purple-100 text-purple-700 rounded">CIO策略簡報</span>
+                            </div>
+                            <div class="text-sm text-gray-700">宏觀經濟及流動性持續，令聯儲局政策立場轉鴿</div>
+                            
+                            <div class="mt-3">
+                                <div class="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-blue-600">📈</span>
+                                        <span class="font-medium">Global Wealth Insights</span>
+                                    </div>
+                                    <span class="text-gray-400">›</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 港元存款 -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                            <div class="text-xs text-gray-500 mb-0.5">港元存款</div>
+                            <div class="text-3xl font-semibold tracking-tight">HKD 283.45</div>
+                            
+                            <div class="mt-3 flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2 text-sm border border-gray-200">
+                                <div class="flex items-center gap-2 text-gray-700">
+                                    <span>📄</span>
+                                    <span>電子月結單及電子通知書</span>
+                                </div>
+                                <span class="text-gray-400">›</span>
+                            </div>
+                        </div>
+
+                        <!-- Citi利率Booster -->
+                        <div onclick="showAccountDetail()" class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 cursor-pointer active:bg-gray-50">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="font-semibold">Citi利率Booster</div>
+                                    <div class="text-xs text-gray-500">.... 0228</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xl font-semibold">HKD 283.45</div>
+                                </div>
+                            </div>
+                            <div class="mt-1 text-xs text-emerald-600">可用金額</div>
+                        </div>
+
+                        <!-- 通息存款 -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="font-medium">通息存款</div>
+                                    <div class="text-xs text-gray-500">.... 5739</div>
+                                </div>
+                                <div class="text-right text-lg font-semibold">HKD 0.00</div>
+                            </div>
+                        </div>
+
+                        <!-- 外幣存款 -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                            <div class="flex justify-between items-center">
+                                <div class="font-medium">外幣存款</div>
+                                <div class="text-right text-lg font-semibold">HKD 0.00</div>
+                            </div>
+                        </div>
+
+                        <!-- 增長您的財富 -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center justify-center gap-2 text-blue-600 font-medium active:bg-gray-50 cursor-pointer" onclick="showToast('增長財富功能開發中', '💰')">
+                            <span class="text-xl">+</span>
+                            <span>增長您的財富</span>
+                        </div>
+
+                        <!-- 其他銀行戶口 -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                            <div class="flex items-start gap-3">
+                                <div class="mt-0.5">🔗</div>
+                                <div class="flex-1">
+                                    <div class="font-medium">連結您於其他銀行戶口</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">利用Open API連結您於其他銀行戶口，更易管理財規，劃您的財富</div>
+                                </div>
+                                <span class="text-gray-400 mt-1">›</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ========== TRANSFER SCREEN ========== -->
+                <div id="screen-transfer" class="hidden p-5">
+                    <div class="mb-5">
+                        <div class="section-header mb-3">轉數快轉賬 / FPS</div>
+                        
+                        <div class="bg-white rounded-3xl p-5 shadow-sm border border-zinc-100">
+                            <div class="space-y-5">
+                                <!-- From -->
+                                <div>
+                                    <div class="text-xs text-zinc-500 mb-1">從</div>
+                                    <div class="font-semibold flex items-center justify-between bg-zinc-50 rounded-2xl px-4 py-3">
+                                        <div>
+                                            <div>Citi利率Booster • 5223 0228</div>
+                                            <div class="text-xs text-emerald-600">可用餘額 HKD 283.45</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- To -->
+                                <div>
+                                    <div class="text-xs text-zinc-500 mb-1">轉賬至</div>
+                                    <input id="transfer-to" type="text" value="陳大文 (陳大文)" 
+                                           class="w-full border border-zinc-200 focus:border-[#003B64] rounded-2xl px-4 py-3 text-sm outline-none">
+                                    <div class="text-[10px] text-zinc-400 mt-1 px-1">或輸入 FPS ID / 電話 / 電郵</div>
+                                </div>
+                                
+                                <!-- Amount -->
+                                <div>
+                                    <div class="text-xs text-zinc-500 mb-1">金額 (HKD)</div>
+                                    <div class="relative">
+                                        <input id="transfer-amount" type="number" value="1500" 
+                                               class="w-full border border-zinc-200 focus:border-[#003B64] rounded-2xl px-4 py-3 text-3xl font-semibold outline-none">
+                                        <div class="absolute right-4 top-4 text-zinc-400 text-sm">HKD</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Note -->
+                                <div>
+                                    <div class="text-xs text-zinc-500 mb-1">備註 (可選)</div>
+                                    <input id="transfer-note" type="text" placeholder="例如：還款 / 餐費" value="週末聚餐"
+                                           class="w-full border border-zinc-200 focus:border-[#003B64] rounded-2xl px-4 py-3 text-sm outline-none">
+                                </div>
+                            </div>
+                            
+                            <button onclick="submitTransfer()" 
+                                    class="mt-6 w-full bg-[#003B64] text-white font-semibold py-3.5 rounded-2xl text-sm active:bg-[#002a4a] ios-button">
+                                確認轉賬
+                            </button>
+                            
+                            <div class="text-center mt-3">
+                                <div class="text-[10px] text-zinc-400">即時到賬 • 免手續費</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ========== TRANSACTIONS SCREEN ========== -->
+                <div id="screen-transactions" class="hidden">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-3 px-1">
+                            <div class="font-semibold">交易記錄</div>
+                            <div onclick="showAllTransactions()" class="text-xs text-[#003B64] font-medium cursor-pointer">顯示所有</div>
+                        </div>
+                        
+                        <!-- Search -->
+                        <div class="relative mb-3">
+                            <input id="search-input" type="text" placeholder="搜尋交易..." onkeyup="filterTransactions()"
+                                   class="w-full bg-white border border-zinc-200 focus:border-[#003B64] rounded-2xl pl-10 py-2.5 text-sm outline-none">
+                            <div class="absolute left-4 top-3 text-zinc-400">🔍</div>
+                        </div>
+                        
+                        <div id="transactions-list" class="space-y-[1px] text-sm">
+                            <!-- Populated dynamically by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ========== SERVICES / MORE SCREEN ========== -->
+                <div id="screen-services" class="hidden p-5">
+                    <div class="mb-6">
+                        <div class="section-header mb-3 px-1">服務</div>
+                        
+                        <div class="bg-white rounded-3xl divide-y text-sm shadow-sm border border-zinc-100">
+                            <div onclick="showProfile()" class="px-5 py-4 flex items-center justify-between active:bg-zinc-50 cursor-pointer">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xl">👤</span>
+                                    <div>個人資料及設定</div>
+                                </div>
+                                <span class="text-zinc-400">›</span>
+                            </div>
+                            <div onclick="showSecurity()" class="px-5 py-4 flex items-center justify-between active:bg-zinc-50 cursor-pointer">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xl">🔒</span>
+                                    <div>保安設定</div>
+                                </div>
+                                <span class="text-zinc-400">›</span>
+                            </div>
+                            <div onclick="contactSupport()" class="px-5 py-4 flex items-center justify-between active:bg-zinc-50 cursor-pointer">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xl">💬</span>
+                                    <div>聯絡客服 / 緊急中心</div>
+                                </div>
+                                <span class="text-zinc-400">›</span>
+                            </div>
+                            <div onclick="showBranchLocator()" class="px-5 py-4 flex items-center justify-between active:bg-zinc-50 cursor-pointer">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xl">📍</span>
+                                    <div>分行及 ATM 搜尋</div>
+                                </div>
+                                <span class="text-zinc-400">›</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="px-1">
+                        <button onclick="logout()" 
+                                class="w-full text-sm text-red-600 font-medium py-3 border border-red-200 rounded-2xl active:bg-red-50">
+                            登出
+                        </button>
+                        <p class="text-center text-[10px] text-zinc-400 mt-4">Demo Version 1.0 • Not affiliated with Citibank</p>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- Bottom Navigation (matching the photo) -->
+            <div class="bg-white border-t flex text-[10px] font-medium">
+                <div onclick="showScreen('home')" class="nav-tab flex-1 flex flex-col items-center py-[7px] text-zinc-600 active:text-[#003B64]">
+                    <span class="text-xl mb-px">📊</span>
+                    <span>Wealth 360</span>
+                </div>
+                <div onclick="showScreen('accounts')" class="nav-tab flex-1 flex flex-col items-center py-[7px] text-zinc-600 active:text-[#003B64]">
+                    <span class="text-xl mb-px">📈</span>
+                    <span>財富管理</span>
+                </div>
+                <div onclick="showScreen('transfer')" class="nav-tab flex-1 flex flex-col items-center py-[7px] text-zinc-600 active:text-[#003B64]">
+                    <span class="text-xl mb-px">💸</span>
+                    <span>繳款及轉賬</span>
+                </div>
+                <div onclick="showScreen('services')" class="nav-tab flex-1 flex flex-col items-center py-[7px] text-zinc-600 active:text-[#003B64]">
+                    <span class="text-xl mb-px">⋯</span>
+                    <span class="relative">Get More <span class="absolute -top-0.5 -right-1 w-2 h-2 bg-red-500 rounded-full"></span></span>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- ==================== ACCOUNT DETAIL MODAL ==================== -->
+    <div id="account-modal" onclick="if (event.target.id === 'account-modal') hideAccountDetail()" 
+         class="hidden fixed inset-0 bg-black/60 flex items-end justify-center z-[100]">
+        <div onclick="event.stopImmediatePropagation()" 
+             class="bg-white w-full max-w-[420px] rounded-t-3xl p-5 modal">
+            
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <div class="font-semibold text-xl">Citi利率Booster</div>
+                    <div class="text-xs text-zinc-500">5223 0228</div>
+                </div>
+                <button onclick="hideAccountDetail()" class="text-3xl leading-none text-zinc-300 hover:text-zinc-400">×</button>
+            </div>
+            
+            <div class="bg-zinc-50 rounded-2xl p-4 mb-4">
+                <div class="text-xs text-zinc-500">可用金額</div>
+                <div class="text-4xl font-semibold tracking-tighter">HKD 283.45</div>
+                
+                <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                        <div class="text-xs text-zinc-500">本月賺息</div>
+                        <div class="font-medium text-emerald-600">HKD 1.70</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-zinc-500">年利率 (Boosted)</div>
+                        <div class="font-medium">0.30% p.a.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-2">
+                <button onclick="quickTransferFromAccount()" 
+                        class="w-full flex items-center justify-center gap-2 bg-[#003B64] text-white py-3 rounded-2xl text-sm font-semibold">
+                    <span>↗️</span> <span>辦理轉賬</span>
+                </button>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="viewStatement()" 
+                            class="flex items-center justify-center gap-2 border py-3 rounded-2xl text-sm">
+                        📄 <span>查閱月結單</span>
+                    </button>
+                    <button onclick="boostInterest()" 
+                            class="flex items-center justify-center gap-2 border py-3 rounded-2xl text-sm bg-emerald-50 border-emerald-200 text-emerald-700">
+                        🚀 <span>Boost 下個月利率</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-5 text-[10px] text-center text-zinc-400">
+                下個月預計利率：0.30% (已 Boost)
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="hidden fixed bottom-20 left-1/2 -translate-x-1/2 max-w-[320px] bg-zinc-900 text-white text-sm px-5 py-3 rounded-2xl shadow-xl z-[200]">
+        <div class="flex items-center gap-3">
+            <span id="toast-icon">✅</span>
+            <span id="toast-message"></span>
+        </div>
+    </div>
+    
+    <script>
+        // Tailwind script configuration
+        function initTailwind() {
+            document.documentElement.style.setProperty('--accent', '#003B64');
+        }
+        
+        // Register Service Worker for PWA
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('[PWA] Service Worker registered'))
+                    .catch(err => console.log('[PWA] SW registration failed', err));
+            }
+        }
+        
+        // Update status bar time (HKT)
+        function updateStatusBarTime() {
+            const timeEl = document.getElementById('status-time');
+            if (!timeEl) return;
+            
+            function setTime() {
+                const now = new Date();
+                // Hong Kong is UTC+8
+                const hkt = new Date(now.getTime() + (now.getTimezoneOffset() + 480) * 60000);
+                let hours = hkt.getHours();
+                let minutes = hkt.getMinutes();
+                const ampm = hours >= 12 ? '' : '';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                const strTime = `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+                timeEl.textContent = strTime;
+            }
+            
+            setTime();
+            setInterval(setTime, 30000); // update every 30s
+        }
+        
+        // Show specific screen (SPA navigation)
+        let currentScreen = 'home';
+        
+        function showScreen(screen) {
+            // Hide all screens
+            document.querySelectorAll('[id^="screen-"]').forEach(el => {
+                el.classList.add('hidden');
+            });
+            
+            // Show target
+            const target = document.getElementById('screen-' + screen);
+            if (target) target.classList.remove('hidden');
+            
+            currentScreen = screen;
+            
+            // Special handling for transactions - load list
+            if (screen === 'transactions') {
+                renderTransactions();
+            }
+            
+            // Update bottom nav active state (visual only)
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active', 'text-[#003B64]');
+                tab.classList.add('text-zinc-600');
+            });
+            
+            // Find the clicked tab and highlight (approximate)
+            const tabs = document.querySelectorAll('.nav-tab');
+            const tabIndex = ['home', 'accounts', 'transfer', 'transactions', 'services'].indexOf(screen);
+            if (tabIndex >= 0 && tabs[tabIndex]) {
+                tabs[tabIndex].classList.add('active', 'text-[#003B64]');
+                tabs[tabIndex].classList.remove('text-zinc-600');
+            }
+        }
+        
+        // Enter the main app from splash
+        function enterApp() {
+            const splash = document.getElementById('splash-screen');
+            const main = document.getElementById('main-app');
+            
+            splash.style.transition = 'opacity 0.3s ease';
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                main.classList.remove('hidden');
+                showScreen('home');
+                
+                // Show welcome toast once
+                setTimeout(() => {
+                    showToast('歡迎回來，Kwun Long Lam！', '👋');
+                }, 1200);
+            }, 280);
+        }
+        
+        // Quick action from home
+        function quickAction(type) {
+            if (type === 'transfer') {
+                showScreen('transfer');
+            } else if (type === 'scan') {
+                showToast('掃描二維碼功能即將推出', '📷');
+            } else if (type === 'pay') {
+                showToast('繳付賬單功能開發中', '🧾');
+            } else if (type === 'invest') {
+                showInvest();
+            } else if (type === 'emergency') {
+                showToast('緊急中心：請致電 24小時熱線 2860 0333', '🆘');
+            }
+        }
+        
+        function applyOffer(type) {
+            if (type === 'quickcash') {
+                showToast('感謝申請！我們的理財顧問將盡快聯絡你。', '📩');
+            }
+        }
+        
+        function showInsights() {
+            showToast('Global Wealth Insights：美元短期偏弱，建議分散配置', '📊');
+        }
+        
+        function showInvest() {
+            showToast('投資服務需要額外風險評估。請聯絡你的 Relationship Manager。', '📈');
+        }
+        
+        // Account detail modal
+        function showAccountDetail() {
+            document.getElementById('account-modal').classList.remove('hidden');
+            document.getElementById('account-modal').classList.add('flex');
+        }
+        
+        function hideAccountDetail() {
+            const modal = document.getElementById('account-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+        
+        function quickTransferFromAccount() {
+            hideAccountDetail();
+            showScreen('transfer');
+            // Pre-fill a bit
+            setTimeout(() => {
+                const amountInput = document.getElementById('transfer-amount');
+                if (amountInput) amountInput.focus();
+            }, 400);
+        }
+        
+        function viewStatement() {
+            hideAccountDetail();
+            showToast('電子月結單已發送至你的電郵', '📧');
+        }
+        
+        function boostInterest() {
+            hideAccountDetail();
+            showToast('恭喜！你已成功 Boost 下個月利率至 0.30%', '🚀');
+            
+            // Update the home screen balance text if visible (demo only)
+            setTimeout(() => {
+                showToast('新利率將於下個計息週期生效', 'ℹ️');
+            }, 2200);
+        }
+        
+        // Transfer submission
+        function submitTransfer() {
+            const to = document.getElementById('transfer-to').value || '未知收款人';
+            const amount = parseFloat(document.getElementById('transfer-amount').value) || 0;
+            const note = document.getElementById('transfer-note').value || '';
+            
+            if (amount <= 0) {
+                showToast('請輸入有效金額', '⚠️');
+                return;
+            }
+            
+            // Simulate processing
+            const btns = document.querySelectorAll('#screen-transfer button');
+            if (btns.length) btns[0].disabled = true;
+            
+            showToast('處理中...', '⏳');
+            
+            setTimeout(() => {
+                // Add to transactions
+                addNewTransaction({
+                    date: '06 JUL 2026',
+                    amount: -amount,
+                    desc: `FPS TRANSFER ${to.toUpperCase().substring(0, 12)}`,
+                    ref: 'FRN' + Date.now().toString().slice(-10)
+                });
+                
+                showToast(`轉賬成功！已轉出 HKD ${amount.toLocaleString()}`, '✅');
+                
+                // Reset form
+                document.getElementById('transfer-amount').value = '';
+                document.getElementById('transfer-note').value = '';
+                
+                if (btns.length) btns[0].disabled = false;
+                
+                // Auto navigate to transactions
+                setTimeout(() => {
+                    showScreen('transactions');
+                }, 1500);
+            }, 1350);
+        }
+        
+        // Transaction data (based on video)
+        let transactions = [
+            { id: 1, date: '06 JUL 2026', amount: -5000, desc: 'ATM WITHDRAWAL JUL 06,26 72 NATHAN RD T.S.T HK', type: 'atm' },
+            { id: 2, date: '06 JUL 2026', amount: 2714, desc: 'LOCAL INCOMING TRANSFER MR WOO PO YI', type: 'in' },
+            { id: 3, date: '06 JUL 2026', amount: 2338, desc: 'LOCAL INCOMING TRANSFER LAI CHEUK HANG', type: 'in' },
+            { id: 4, date: '06 JUL 2026', amount: -3500, desc: 'FPS TRANSFER LAM K*** L***', ref: 'FRN20260705PAYCO103573396616', type: 'fps' },
+            { id: 5, date: '06 JUL 2026', amount: 1808, desc: 'LOCAL INCOMING TRANSFER MR CHAN YUK WING SEOUL TRIP', type: 'in' },
+            { id: 6, date: '30 JUN 2026', amount: 16.22, desc: 'Interest Credit', type: 'interest' },
+            { id: 7, date: '15 JUN 2026', amount: -10000, desc: 'FPS TRANSFER LAM K*** L***', ref: 'FRN20260613PAYCO103511497175', type: 'fps' },
+            { id: 8, date: '15 JUN 2026', amount: -7500, desc: 'FPS TRANSFER LAM K*** L***', ref: 'FRN20260615PAYCO103514963117', type: 'fps' },
+            { id: 9, date: '12 JUN 2026', amount: -20000, desc: 'FPS TRANSFER LAM K*** L***', ref: 'FRN20260612PAYCO103507291683', type: 'fps' },
+            { id: 10, date: '09 JUN 2026', amount: -358, desc: 'WALLET PURCHASE MUJI (YOHO MALL) YUEN LONG', type: 'pos' },
+            { id: 11, date: '08 JUN 2026', amount: -1765, desc: 'FPS TRANSFER WONG M** F*** Coffee beans', type: 'fps' },
+            { id: 12, date: '05 JUN 2026', amount: -415880, desc: 'Check Withdrawal', type: 'check' },
+            { id: 13, date: '05 JUN 2026', amount: -20000, desc: 'FPS TRANSFER LAM K*** L***', type: 'fps' },
+            { id: 14, date: '04 JUN 2026', amount: -80000, desc: 'FPS TRANSFER LAM K*** L***', type: 'fps' },
+            { id: 15, date: '04 JUN 2026', amount: -40000, desc: 'FPS TRANSFER LAM K*** L***', type: 'fps' },
+        ];
+        
+        function renderTransactions(filteredTxns = null) {
+            const container = document.getElementById('transactions-list');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            const list = filteredTxns || transactions;
+            
+            if (list.length === 0) {
+                container.innerHTML = '<div class="text-center py-8 text-zinc-400 text-sm">沒有找到相關交易</div>';
+                return;
+            }
+            
+            list.forEach(tx => {
+                const isPositive = tx.amount > 0;
+                const amountColor = isPositive ? 'text-emerald-600' : 'text-zinc-800';
+                const amountPrefix = isPositive ? '+' : '';
+                
+                const div = document.createElement('div');
+                div.className = `transaction-item bg-white px-4 py-3 flex justify-between items-center border-b last:border-b-0 cursor-pointer`;
+                div.innerHTML = `
+                    <div class="flex-1 min-w-0 pr-3">
+                        <div class="font-medium text-sm truncate">${tx.desc}</div>
+                        <div class="text-[10px] text-zinc-500 flex items-center gap-1.5">
+                            <span>${tx.date}</span>
+                            ${tx.ref ? `<span class="font-mono text-[9px] bg-zinc-100 px-1 rounded">${tx.ref}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="text-right font-semibold tabular-nums ${amountColor} whitespace-nowrap">
+                        ${amountPrefix}HKD ${Math.abs(tx.amount).toLocaleString()}
+                    </div>
+                `;
+                
+                // Click to show detail (simple)
+                div.onclick = () => showTransactionDetail(tx);
+                
+                container.appendChild(div);
+            });
+        }
+        
+        function filterTransactions() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            if (!searchTerm) {
+                renderTransactions();
+                return;
+            }
+            
+            const filtered = transactions.filter(tx => 
+                tx.desc.toLowerCase().includes(searchTerm) || 
+                (tx.ref && tx.ref.toLowerCase().includes(searchTerm)) ||
+                tx.date.toLowerCase().includes(searchTerm)
+            );
+            
+            renderTransactions(filtered);
+        }
+        
+        function addNewTransaction(newTx) {
+            // Add to beginning of array
+            transactions.unshift({
+                id: Date.now(),
+                ...newTx
+            });
+            
+            // If currently viewing transactions, re-render
+            if (currentScreen === 'transactions') {
+                renderTransactions();
+            }
+        }
+        
+        function showTransactionDetail(tx) {
+            const modalHTML = `
+                <div class="fixed inset-0 bg-black/70 flex items-end justify-center z-[110]" onclick="this.remove()">
+                    <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-[420px] rounded-t-3xl p-6 modal">
+                        <div class="flex justify-between mb-5">
+                            <div class="font-semibold text-xl">交易詳情</div>
+                            <button onclick="event.target.closest('.fixed').remove()" class="text-3xl text-zinc-300">×</button>
+                        </div>
+                        
+                        <div class="space-y-4 text-sm">
+                            <div class="flex justify-between py-1 border-b">
+                                <span class="text-zinc-500">日期</span>
+                                <span class="font-medium">${tx.date}</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b">
+                                <span class="text-zinc-500">描述</span>
+                                <span class="font-medium text-right max-w-[220px]">${tx.desc}</span>
+                            </div>
+                            ${tx.ref ? `
+                            <div class="flex justify-between py-1 border-b">
+                                <span class="text-zinc-500">參考編號</span>
+                                <span class="font-mono text-xs">${tx.ref}</span>
+                            </div>` : ''}
+                            <div class="flex justify-between py-3 text-lg">
+                                <span class="font-medium">金額</span>
+                                <span class="font-semibold tabular-nums ${tx.amount > 0 ? 'text-emerald-600' : ''}">
+                                    ${tx.amount > 0 ? '+' : ''}HKD ${Math.abs(tx.amount).toLocaleString()}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 text-xs text-center text-zinc-400">
+                            此為示範數據 • 如有疑問請聯絡 Citi 客服
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+        
+        function showAllTransactions() {
+            document.getElementById('search-input').value = '';
+            renderTransactions();
+            showToast('已顯示全部交易記錄', '📋');
+        }
+        
+        // Other service actions
+        function showProfile() {
+            showToast('個人資料頁面開發中。你可以稍後在此編輯姓名、地址等。', '👤');
+        }
+        
+        function showSecurity() {
+            showToast('保安設定：生物辨識登入已啟用', '🔐');
+        }
+        
+        function contactSupport() {
+            showToast('感謝使用示範版。如需真實支援，請致電 Citi HK 客戶服務熱線。', '📞');
+        }
+        
+        function showBranchLocator() {
+            showToast('分行搜尋功能即將推出。', '🗺️');
+        }
+        
+        function showAddAccount() {
+            showToast('Open Banking 連結功能需要真實 API 整合。', '🔗');
+        }
+        
+        function logout() {
+            if (confirm('確定要登出示範帳戶嗎？')) {
+                const main = document.getElementById('main-app');
+                const splash = document.getElementById('splash-screen');
+                
+                main.classList.add('hidden');
+                splash.style.transition = 'none';
+                splash.style.opacity = '1';
+                splash.classList.remove('hidden');
+                
+                // Reset to initial state
+                setTimeout(() => {
+                    showToast('已安全登出', '👋');
+                }, 600);
+            }
+        }
+        
+        // Toast helper
+        let toastTimeout;
+        function showToast(message, icon = '✅') {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-message');
+            const iconEl = document.getElementById('toast-icon');
+            
+            msgEl.textContent = message;
+            iconEl.textContent = icon;
+            
+            toast.classList.remove('hidden');
+            toast.style.display = 'flex';
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.style.transition = 'all 0.25s ease';
+                toast.style.opacity = '0';
+                
+                setTimeout(() => {
+                    toast.style.opacity = '1';
+                    toast.style.transition = '';
+                    toast.style.display = 'none';
+                    toast.classList.add('hidden');
+                }, 200);
+            }, 2800);
+        }
+        
+        // Initialize everything
+        function initializeApp() {
+            initTailwind();
+            registerServiceWorker();
+            updateStatusBarTime();
+            
+            // Render initial transactions (in case user goes directly)
+            // Note: renderTransactions is called when screen is shown
+            
+            // Make sure splash is visible on load
+            document.getElementById('splash-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            
+            // Keyboard support hint (for desktop testing)
+            console.log('%c[Citi HK PWA] Demo initialized. Press F12 to inspect.', 'color:#64748b');
+            
+            // Optional: Preload a hint for user
+            // setTimeout(() => { console.log('%c[Tip] You can now edit this file easily!', 'color:#64748b'); }, 5000);
+        }
+        
+        // Boot the app
+        window.onload = initializeApp;
+        
+        // Expose some functions for easy editing / debugging in console
+        window.CitiDemo = {
+            showScreen,
+            showToast,
+            addTransaction: addNewTransaction,
+            resetTransactions: () => { transactions = [...transactions]; renderTransactions(); }
+        };
+    </script>
+</body>
+</html>
